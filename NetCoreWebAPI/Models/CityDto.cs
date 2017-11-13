@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 
 namespace NetCoreWebAPI.Models
 {
-    public class City
+    public class CityDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Desc { get; set; }
+        public string Description { get; set; }
         public int NumberOfPointOfInterest { get; set; }
-        public List<PointsOfInterest> PointsOfInterest { get; set; }
+        public List<PointsOfInterestDto> PointsOfInterest { get; set; }
 
-        public City()
+        public CityDto()
         {
-            PointsOfInterest = new List<PointsOfInterest>();
+            PointsOfInterest = new List<PointsOfInterestDto>();
             NumberOfPointOfInterest = PointsOfInterest.Count();
         }
     }

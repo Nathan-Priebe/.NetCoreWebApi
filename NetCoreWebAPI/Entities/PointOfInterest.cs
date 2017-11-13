@@ -17,7 +17,7 @@ namespace NetCoreWebAPI.Entities
         [MaxLength(50)]
         public string Name { get; set; }
         [MaxLength(200)]
-        public string Desc { get; set; }
+        public string Description { get; set; }
 
         [ForeignKey("CityId")]
         public City city { get; set; }

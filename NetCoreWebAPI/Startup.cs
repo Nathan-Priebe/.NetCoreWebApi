@@ -10,7 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetCoreWebAPI.Entities;
+using NetCoreWebAPI.Services;
 using Newtonsoft.Json.Serialization;
+using NLog.Extensions.Logging;
 
 namespace NetCoreWebAPI
 {
@@ -36,14 +38,16 @@ namespace NetCoreWebAPI
                 }
             });
             var connectionString = Configuration["connectionStrings:DefaultConnection"];
-            services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString)); 
+            services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoContext cityInfoContext)
         {
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
+            //loggerFactory.AddConsole();
+            //loggerFactory.AddDebug();
+            loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
             {
@@ -53,6 +57,21 @@ namespace NetCoreWebAPI
             {
                 app.UseExceptionHandler();
             }
+
+            cityInfoContext.EnsureSeedDataForContext();
+
+            app.UseStatusCodePages();
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<City, Models.CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<City, Models.CityDto>();
+                cfg.CreateMap<PointOfInterest, Models.PointsOfInterestDto>();
+                cfg.CreateMap<Models.PointOfInterestCreationDto, PointOfInterest>();
+                cfg.CreateMap<Models.PointOfInterestUpdateDto, PointOfInterest>();
+                cfg.CreateMap<PointOfInterest, Models.PointOfInterestUpdateDto>();
+            });
+
 
             app.UseMvc();
 

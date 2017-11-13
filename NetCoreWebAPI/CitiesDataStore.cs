@@ -9,62 +9,62 @@ namespace NetCoreWebAPI
     public class CitiesDataStore
     {
         public static CitiesDataStore Current { get; } = new CitiesDataStore();
-        public List<City> Cities { get; set; }
+        public List<CityDto> Cities { get; set; }
 
         public CitiesDataStore()
         {
             // init dummy data
-            Cities = new List<City>()
+            Cities = new List<CityDto>()
             {
-                new City()
+                new CityDto()
                 {
                      Id = 1,
                      Name = "New York City",
-                     Desc = "The one with that big park.",
-                     PointsOfInterest = new List<PointsOfInterest>()
+                     Description = "The one with that big park.",
+                     PointsOfInterest = new List<PointsOfInterestDto>()
                      {
-                         new PointsOfInterest() {
+                         new PointsOfInterestDto() {
                              Id = 1,
                              Name = "Central Park",
-                             Desc = "The most visited urban park in the United States." },
-                          new PointsOfInterest() {
+                             Description = "The most visited urban park in the United States." },
+                          new PointsOfInterestDto() {
                              Id = 2,
                              Name = "Empire State Building",
-                              Desc = "A 102-story skyscraper located in Midtown Manhattan." },
+                              Description = "A 102-story skyscraper located in Midtown Manhattan." },
                      }
                 },
-                new City()
+                new CityDto()
                 {
                     Id = 2,
                     Name = "Antwerp",
-                    Desc = "The one with the cathedral that was never really finished.",
-                    PointsOfInterest = new List<PointsOfInterest>()
+                    Description = "The one with the cathedral that was never really finished.",
+                    PointsOfInterest = new List<PointsOfInterestDto>()
                      {
-                         new PointsOfInterest() {
+                         new PointsOfInterestDto() {
                              Id = 3,
                              Name = "Cathedral of Our Lady",
-                             Desc = "A Gothic style cathedral, conceived by architects Jan and Pieter Appelmans." },
-                          new PointsOfInterest() {
+                             Description = "A Gothic style cathedral, conceived by architects Jan and Pieter Appelmans." },
+                          new PointsOfInterestDto() {
                              Id = 4,
                              Name = "Antwerp Central Station",
-                              Desc = "The the finest example of railway architecture in Belgium." },
+                              Description = "The the finest example of railway architecture in Belgium." },
                      }
                 },
-                new City()
+                new CityDto()
                 {
                     Id= 3,
                     Name = "Paris",
-                    Desc = "The one with that big tower.",
-                    PointsOfInterest = new List<PointsOfInterest>()
+                    Description = "The one with that big tower.",
+                    PointsOfInterest = new List<PointsOfInterestDto>()
                      {
-                         new PointsOfInterest() {
+                         new PointsOfInterestDto() {
                              Id = 5,
                              Name = "Eiffel Tower",
-                             Desc = "A wrought iron lattice tower on the Champ de Mars, named after engineer Gustave Eiffel." },
-                          new PointsOfInterest() {
+                             Description = "A wrought iron lattice tower on the Champ de Mars, named after engineer Gustave Eiffel." },
+                          new PointsOfInterestDto() {
                              Id = 6,
                              Name = "The Louvre",
-                             Desc = "The world's largest museum." },
+                             Description = "The world's largest museum." },
                      }
                 }
             };

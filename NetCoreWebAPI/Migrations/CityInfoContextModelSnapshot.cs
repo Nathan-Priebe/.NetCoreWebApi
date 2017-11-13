@@ -25,7 +25,7 @@ namespace NetCoreWebAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Desc")
+                    b.Property<string>("Description")
                         .HasMaxLength(200);
 
                     b.Property<string>("Name")
