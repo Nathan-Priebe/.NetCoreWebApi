@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreWebAPI.Entities
 {
-    public class CityInfoContext : DbContext
+    public sealed class CityInfoContext : DbContext
     {
         public CityInfoContext(DbContextOptions<CityInfoContext> options): base(options)
         {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,11 +13,13 @@ namespace NetCoreWebAPI.Controllers
     {
         private ILogger<PointsOfInterestController> _logger;
         private ICityInfoRepository _cityInfoRepository;
+        private IPOIRepository _poiRepository;
 
-        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, ICityInfoRepository cityInfoRepository)
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, ICityInfoRepository cityInfoRepository, IPOIRepository poiRepository)
         {
             _logger = logger;
             _cityInfoRepository = cityInfoRepository;
+            _poiRepository = poiRepository;
         }
 
         [HttpGet("{cityId}/pointsofinterest")]
@@ -28,17 +27,7 @@ namespace NetCoreWebAPI.Controllers
         {
             try
             {
-                if (!_cityInfoRepository.CityExists(cityId))
-                {
-                    _logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
-                    return NotFound();
-                }
-
-                var pointsOfInterestForCity = _cityInfoRepository.GetPointsOfInterestForCity(cityId);
-                var pointsOfInterestForCityResults =
-                    Mapper.Map<IEnumerable<PointsOfInterestDto>>(pointsOfInterestForCity);
-
-                return Ok(pointsOfInterestForCityResults);
+                return Ok(_poiRepository.GetPointsOfInterest(cityId));
             }
             catch (Exception ex)
             {
@@ -50,20 +39,7 @@ namespace NetCoreWebAPI.Controllers
         [HttpGet("{cityId}/pointsofinterest/{pointofinterestId}", Name="GetPointOfInterest")]
         public IActionResult GetPointOfInterest(int cityId, int pointOfInterestId)
         {
-            if (!_cityInfoRepository.CityExists(cityId))
-            {
-                return NotFound();
-            }
-
-            var pointOfInterest = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
-
-            if (pointOfInterest == null)
-            {
-                return NotFound();
-            }
-
-            var pointOfInterestResult = Mapper.Map<PointsOfInterestDto>(pointOfInterest);
-            return Ok(pointOfInterestResult);
+            return Ok(_poiRepository.GetPointOfInterest(cityId, pointOfInterestId));
         }
 
         [HttpPost("{cityId}/pointofinterest")]
@@ -84,21 +60,7 @@ namespace NetCoreWebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_cityInfoRepository.CityExists(cityId))
-            {
-                return NotFound();
-            }
-
-            var finalPointOfInterest = Mapper.Map<Entities.PointOfInterest>(pointOfInterest);
-
-            _cityInfoRepository.AddPointOfInterestForCity(cityId, finalPointOfInterest);
-
-            if (!_cityInfoRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
-
-            var createdPointOfInterestToReturn = Mapper.Map<PointsOfInterestDto>(finalPointOfInterest);
+            var createdPointOfInterestToReturn = _poiRepository.CreatePointOfInterest(cityId, pointOfInterest);
 
             return CreatedAtRoute("GetPointOfInterest", new
                 { cityId = cityId, id = createdPointOfInterestToReturn.Id }, createdPointOfInterestToReturn);
@@ -122,23 +84,7 @@ namespace NetCoreWebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_cityInfoRepository.CityExists(cityId))
-            {
-                return NotFound();
-            }
-
-            var pointOfInterestEntity = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
-            if (pointOfInterestEntity == null)
-            {
-                return NotFound();
-            }
-
-            Mapper.Map(pointOfInterestUpdate, pointOfInterestEntity);
-
-            if (!_cityInfoRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
+            _poiRepository.UpdatePointOfInterest(cityId, pointOfInterestId, pointOfInterestUpdate);
 
             return NoContent();
         }
@@ -197,23 +143,7 @@ namespace NetCoreWebAPI.Controllers
         [HttpDelete("{cityId}/pointofinterest/{id}")]
         public IActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
-            if (!_cityInfoRepository.CityExists(cityId))
-            {
-                return NotFound();
-            }
-
-            var pointOfInterestEntity = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
-            if (pointOfInterestEntity == null)
-            {
-                return NotFound();
-            }
-
-            _cityInfoRepository.DeletePointOfInterest(pointOfInterestEntity);
-
-            if (!_cityInfoRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
+           _poiRepository.DeletePointOfInterest(cityId, pointOfInterestId);
 
             return NoContent();
         }
