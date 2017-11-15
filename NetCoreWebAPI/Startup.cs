@@ -8,6 +8,7 @@ using NetCoreWebAPI.Entities;
 using NetCoreWebAPI.Services;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
+using NetCoreWebAPI.Middleware;
 
 namespace NetCoreWebAPI
 {
@@ -35,6 +36,8 @@ namespace NetCoreWebAPI
             var connectionString = Configuration["connectionStrings:DefaultConnection"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+            services.AddScoped<ICityRepository, Data.City>();
+            services.AddScoped<IPOIRepository, Data.POI>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,9 +48,11 @@ namespace NetCoreWebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCustomExceptionHandler();
             }
             else
             {
+                app.UseCustomExceptionHandler();
                 app.UseExceptionHandler();
             }
 

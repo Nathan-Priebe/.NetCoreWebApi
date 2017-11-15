@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NetCoreWebAPI.Services;
+using NetCoreWebAPI.Exceptions;
 
 namespace NetCoreWebAPI.Controllers
 {
@@ -16,6 +17,7 @@ namespace NetCoreWebAPI.Controllers
         [HttpGet()]
         public IActionResult GetCities()
         {
+            throw new InternalErrorException();
             return Ok(_cityRepository.GetCities());
         }
 
