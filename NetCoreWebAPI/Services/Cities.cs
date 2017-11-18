@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
+using NetCoreWebAPI.Exceptions;
 using NetCoreWebAPI.Models;
-using NetCoreWebAPI.Services;
 
-namespace NetCoreWebAPI.Data
+namespace NetCoreWebAPI.Services
 {
-    public class City : ICityRepository
+    public class Cities : ICityRepository
     {
         private ICityInfoRepository _cityInfoRepository;
 
-        public City(ICityInfoRepository cityInfoRepository)
+        public Cities(ICityInfoRepository cityInfoRepository)
         {
             _cityInfoRepository = cityInfoRepository;
         }
@@ -25,7 +24,7 @@ namespace NetCoreWebAPI.Data
             var city = _cityInfoRepository.GetCity(id, false);
 
             if (city == null)
-                throw new Exception();
+                throw new NotFoundException($"City with the ID of {id} could not be found");
 
             return Mapper.Map<CityWithoutPointsOfInterestDto>(city);
         }
@@ -35,7 +34,7 @@ namespace NetCoreWebAPI.Data
             var city = _cityInfoRepository.GetCity(id, true);
 
             if (city == null)
-                throw new Exception();
+                throw new NotFoundException($"City with the ID of {id} could not be found");
 
             return Mapper.Map<CityDto>(city);
         }

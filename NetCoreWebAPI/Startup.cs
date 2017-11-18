@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,8 @@ using NetCoreWebAPI.Services;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using NetCoreWebAPI.Middleware;
+using Swashbuckle.AspNetCore.Swagger;
+using Cities = NetCoreWebAPI.Services.Cities;
 
 namespace NetCoreWebAPI
 {
@@ -36,13 +39,23 @@ namespace NetCoreWebAPI
             var connectionString = Configuration["connectionStrings:DefaultConnection"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
-            services.AddScoped<ICityRepository, Data.City>();
-            services.AddScoped<IPOIRepository, Data.POI>();
+            services.AddScoped<ICityRepository, Cities>();
+            services.AddScoped<IPOIRepository, Poi>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info {Title = "Cities API", Version = "v1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoContext cityInfoContext)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cities API V1");
+            });
+
             loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
@@ -62,8 +75,8 @@ namespace NetCoreWebAPI
 
             AutoMapper.Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<City, Models.CityWithoutPointsOfInterestDto>();
-                cfg.CreateMap<City, Models.CityDto>();
+                cfg.CreateMap<Cities, Models.CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<Cities, Models.CityDto>();
                 cfg.CreateMap<PointOfInterest, Models.PointsOfInterestDto>();
                 cfg.CreateMap<Models.PointOfInterestCreationDto, PointOfInterest>();
                 cfg.CreateMap<Models.PointOfInterestUpdateDto, PointOfInterest>();

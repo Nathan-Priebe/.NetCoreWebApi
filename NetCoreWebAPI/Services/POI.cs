@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using NetCoreWebAPI.Controllers;
+using NetCoreWebAPI.Exceptions;
 using NetCoreWebAPI.Models;
-using NetCoreWebAPI.Services;
 
-namespace NetCoreWebAPI.Data
+namespace NetCoreWebAPI.Services
 {
-    public class POI : IPOIRepository
+    public class Poi : IPOIRepository
     {
         private ICityInfoRepository _cityInfoRepository;
         private ILogger<PointsOfInterestController> _logger;
 
-        public POI(ILogger<PointsOfInterestController> logger, CityInfoRepository cityInfoRepository)
+        public Poi(ILogger<PointsOfInterestController> logger, CityInfoRepository cityInfoRepository)
         {
             _logger = logger;
             _cityInfoRepository = cityInfoRepository;
@@ -23,8 +23,8 @@ namespace NetCoreWebAPI.Data
         {
             if (!_cityInfoRepository.CityExists(id))
             {
-                _logger.LogInformation($"City with id {id} wasn't found when accessing points of interest.");
-                throw new Exception();
+                _logger.LogInformation($"City with ID {id} wasn't found when accessing points of interest.");
+                throw new NotFoundException($"City with the ID {id} wasn't found when accessing the points of interest");
             }
 
             var pointsOfInterestForCity = _cityInfoRepository.GetPointsOfInterestForCity(id);
@@ -36,14 +36,14 @@ namespace NetCoreWebAPI.Data
         {
             if (!_cityInfoRepository.CityExists(cityId))
             {
-                throw new Exception();
+                throw new NotFoundException($"City with the ID {cityId} wasn't found when accessing the point of interest");
             }
 
             var pointOfInterest = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
 
             if (pointOfInterest == null)
             {
-                throw new Exception();
+                throw new NotFoundException($"Point of interest with the ID {pointOfInterestId} wasn't found");
             }
 
             return Mapper.Map<PointsOfInterestDto>(pointOfInterest);
@@ -53,7 +53,7 @@ namespace NetCoreWebAPI.Data
         {
             if (!_cityInfoRepository.CityExists(cityId))
             {
-                throw new Exception();
+                throw new NotFoundException($"City with the ID of {cityId} wasn't found ");
             }
 
             var finalPointOfInterest = Mapper.Map<Entities.PointOfInterest>(pointOfInterest);
@@ -65,8 +65,6 @@ namespace NetCoreWebAPI.Data
                 throw new Exception("A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<PointsOfInterestDto>(finalPointOfInterest);
-
             return Mapper.Map<PointsOfInterestDto>(finalPointOfInterest);
         }
 
@@ -74,13 +72,13 @@ namespace NetCoreWebAPI.Data
         {
             if (!_cityInfoRepository.CityExists(cityId))
             {
-               throw new Exception();
+               throw new NotFoundException($"City with the ID {cityId} wasn't found");
             }
 
             var pointOfInterestEntity = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
             if (pointOfInterestEntity == null)
             {
-                throw new Exception();
+                throw new NotFoundException($"City with the ID {cityId} wasn't found");
             }
 
             Mapper.Map(pointOfInterestUpdate, pointOfInterestEntity);
@@ -95,13 +93,13 @@ namespace NetCoreWebAPI.Data
         {
             if (!_cityInfoRepository.CityExists(cityId))
             {
-                throw new Exception();
+                throw new NotFoundException($"City with the ID {cityId} wasn't found");
             }
 
             var pointOfInterestEntity = _cityInfoRepository.GetPointOfInterestForCity(cityId, pointOfInterestId);
             if (pointOfInterestEntity == null)
             {
-                throw new Exception();
+                throw new NotFoundException($"Point of interest with the ID {pointOfInterestId} wasn't found");
             }
 
             _cityInfoRepository.DeletePointOfInterest(pointOfInterestEntity);

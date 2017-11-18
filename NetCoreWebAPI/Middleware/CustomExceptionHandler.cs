@@ -28,19 +28,6 @@ namespace NetCoreWebAPI.Middleware
             {
                 await _next(httpContext);
             }
-            catch (InternalErrorException ex)
-            {
-                if (httpContext.Response.HasStarted)
-                {
-                    _logger.LogWarning(
-                        "The response has already started, the http status code middleware will not be executed");
-                }
-
-                httpContext.Response.Clear();
-                httpContext.Response.StatusCode = 500;
-
-                await httpContext.Response.WriteAsync(ex.Message);
-            }
             catch (NotFoundException ex)
             {
                 //if (httpContext.Response.HasStarted)

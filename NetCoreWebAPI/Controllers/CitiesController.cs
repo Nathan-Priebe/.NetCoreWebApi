@@ -17,7 +17,6 @@ namespace NetCoreWebAPI.Controllers
         [HttpGet()]
         public IActionResult GetCities()
         {
-            throw new InternalErrorException();
             return Ok(_cityRepository.GetCities());
         }
 
