@@ -11,29 +11,19 @@ namespace NetCoreWebAPI.Controllers
     [Route("api/cities")]
     public class PointsOfInterestController : Controller
     {
-        private ILogger<PointsOfInterestController> _logger;
         private ICityInfoRepository _cityInfoRepository;
         private IPOIRepository _poiRepository;
 
-        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, ICityInfoRepository cityInfoRepository, IPOIRepository poiRepository)
+        public PointsOfInterestController(ICityInfoRepository cityInfoRepository, IPOIRepository poiRepository)
         {
-            _logger = logger;
             _cityInfoRepository = cityInfoRepository;
             _poiRepository = poiRepository;
         }
 
         [HttpGet("{cityId}/pointsofinterest")]
         public IActionResult GetPointsOfInterest(int cityId)
-        {
-            try
-            {
+        { 
                 return Ok(_poiRepository.GetPointsOfInterest(cityId));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Exception while getting points of interest for city with id {cityId}.", ex);
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
         }
 
         [HttpGet("{cityId}/pointsofinterest/{pointofinterestId}", Name="GetPointOfInterest")]
@@ -45,45 +35,14 @@ namespace NetCoreWebAPI.Controllers
         [HttpPost("{cityId}/pointofinterest")]
         public IActionResult CreatePointOfInterest(int cityId, [FromBody] PointOfInterestCreationDto pointOfInterest)
         {
-            if (pointOfInterest == null)
-            {
-                return BadRequest();
-            }
+            _poiRepository.CreatePointOfInterest(cityId, pointOfInterest);
 
-            if (pointOfInterest.Description == pointOfInterest.Name)
-            {
-                ModelState.AddModelError("Description", "The provided description should be different from the name.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var createdPointOfInterestToReturn = _poiRepository.CreatePointOfInterest(cityId, pointOfInterest);
-
-            return CreatedAtRoute("GetPointOfInterest", new
-                { cityId = cityId, id = createdPointOfInterestToReturn.Id }, createdPointOfInterestToReturn);
+            return Ok();
         }
 
         [HttpPut("{cityId}/pointsofinterest/{id}")]
         public IActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, [FromBody] PointOfInterestUpdateDto pointOfInterestUpdate)
         {
-            if (pointOfInterestUpdate == null)
-            {
-                return BadRequest();
-            }
-
-            if (pointOfInterestUpdate.Description == pointOfInterestUpdate.Name)
-            {
-                ModelState.AddModelError("Description", "The provided description should be different from the name.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             _poiRepository.UpdatePointOfInterest(cityId, pointOfInterestId, pointOfInterestUpdate);
 
             return NoContent();

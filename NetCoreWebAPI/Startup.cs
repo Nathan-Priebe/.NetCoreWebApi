@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetCoreWebAPI.Entities;
+using NetCoreWebAPI.Filter;
 using NetCoreWebAPI.Services;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
@@ -45,6 +47,10 @@ namespace NetCoreWebAPI
             {
                 c.SwaggerDoc("v1", new Info {Title = "Cities API", Version = "v1"});
             });
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ValidateModelAttribute));
+            }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<PoiCreationDtoValidator>()).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<POIUpdateDTOValidator>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,7 +13,7 @@ namespace NetCoreWebAPI.Services
         private ICityInfoRepository _cityInfoRepository;
         private ILogger<PointsOfInterestController> _logger;
 
-        public Poi(ILogger<PointsOfInterestController> logger, CityInfoRepository cityInfoRepository)
+        public Poi(ILogger<PointsOfInterestController> logger, ICityInfoRepository cityInfoRepository)
         {
             _logger = logger;
             _cityInfoRepository = cityInfoRepository;
