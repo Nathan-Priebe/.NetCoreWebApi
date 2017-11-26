@@ -8,6 +8,7 @@ using AutoMapper;
 
 namespace NetCoreWebAPI.Controllers
 {
+    [Produces("application/json")]
     [Route("api/cities")]
     public class PointsOfInterestController : Controller
     {
@@ -20,18 +21,42 @@ namespace NetCoreWebAPI.Controllers
             _poiRepository = poiRepository;
         }
 
+        /// <summary>
+        /// Returns a list of points of interest for a given city Id
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpGet("{cityId}/pointsofinterest")]
         public IActionResult GetPointsOfInterest(int cityId)
         { 
                 return Ok(_poiRepository.GetPointsOfInterest(cityId));
         }
 
+        /// <summary>
+        /// Returns a specific point of interest for a specific city Id
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="pointOfInterestId">The point of interest identifier.</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpGet("{cityId}/pointsofinterest/{pointofinterestId}", Name="GetPointOfInterest")]
         public IActionResult GetPointOfInterest(int cityId, int pointOfInterestId)
         {
             return Ok(_poiRepository.GetPointOfInterest(cityId, pointOfInterestId));
         }
 
+        /// <summary>
+        /// Creates the point of interest for a specific city ID
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="pointOfInterest">The point of interest.</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [HttpPost("{cityId}/pointofinterest")]
         public IActionResult CreatePointOfInterest(int cityId, [FromBody] PointOfInterestCreationDto pointOfInterest)
         {
@@ -40,6 +65,16 @@ namespace NetCoreWebAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Updates a specific point of interest in a specified city 
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="pointOfInterestId">The point of interest identifier.</param>
+        /// <param name="pointOfInterestUpdate">The point of interest update.</param>
+        /// <returns></returns>
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
         [HttpPut("{cityId}/pointsofinterest/{id}")]
         public IActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, [FromBody] PointOfInterestUpdateDto pointOfInterestUpdate)
         {
@@ -48,6 +83,16 @@ namespace NetCoreWebAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Partially updates a point of interest
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="pointOfInterestId">The point of interest identifier.</param>
+        /// <param name="patchDoc">The patch document.</param>
+        /// <returns></returns>
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
         [HttpPatch("{cityId}/pointofinterest/{id}")]
         public IActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId,
             [FromBody] JsonPatchDocument<PointOfInterestUpdateDto> patchDoc)
@@ -99,6 +144,15 @@ namespace NetCoreWebAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes the point of interest.
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="pointOfInterestId">The point of interest identifier.</param>
+        /// <returns></returns>
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
         [HttpDelete("{cityId}/pointofinterest/{id}")]
         public IActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {

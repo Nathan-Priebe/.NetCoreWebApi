@@ -12,6 +12,10 @@ namespace NetCoreWebAPI.Controllers
             _ctx = ctx;
         }
 
+        /// <summary>
+        /// Creates a new instance of the test database using the provided database connection string
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/testdatabase")]
         public IActionResult TestDatabase()

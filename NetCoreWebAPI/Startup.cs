@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using NetCoreWebAPI.Entities;
 using NetCoreWebAPI.Filter;
 using NetCoreWebAPI.Services;
@@ -38,15 +40,22 @@ namespace NetCoreWebAPI
                     castedResolver.NamingStrategy = null;
                 }
             });
+            //Resolving database connection
             var connectionString = Configuration["connectionStrings:DefaultConnection"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+            //Adding services for dependency injection
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
             services.AddScoped<ICityRepository, Cities>();
             services.AddScoped<IPOIRepository, Poi>();
+            //Adding swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info {Title = "Cities API", Version = "v1"});
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "NetCoreWebAPI.xml");
+                c.IncludeXmlComments(xmlPath);
             });
+            //Adding Fluent validation filters
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ValidateModelAttribute));
@@ -56,6 +65,7 @@ namespace NetCoreWebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoContext cityInfoContext)
         {
+            //Enabling swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -79,6 +89,7 @@ namespace NetCoreWebAPI
 
             app.UseStatusCodePages();
 
+            //Using automapper to create mapping between entities and DTO models
             AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<Cities, Models.CityWithoutPointsOfInterestDto>();
@@ -88,7 +99,6 @@ namespace NetCoreWebAPI
                 cfg.CreateMap<Models.PointOfInterestUpdateDto, PointOfInterest>();
                 cfg.CreateMap<PointOfInterest, Models.PointOfInterestUpdateDto>();
             });
-
 
             app.UseMvc();
 
