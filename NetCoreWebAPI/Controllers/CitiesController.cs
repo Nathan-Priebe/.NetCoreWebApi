@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NetCoreWebAPI.Services;
 using NetCoreWebAPI.Exceptions;
+using NetCoreWebAPI.Models;
 
 namespace NetCoreWebAPI.Controllers
 {
@@ -9,10 +10,12 @@ namespace NetCoreWebAPI.Controllers
     public class CitiesController : Controller
     {
         private readonly ICityRepository _cityRepository;
+        private readonly ICityInfoRepository _cityInfoRepository;
 
-        public CitiesController(ICityRepository cityRepository)
+        public CitiesController(ICityRepository cityRepository, ICityInfoRepository cityInfoRepository)
         {
             _cityRepository = cityRepository;
+            _cityInfoRepository = cityInfoRepository;
         }
 
         /// <summary>
@@ -37,6 +40,27 @@ namespace NetCoreWebAPI.Controllers
         public IActionResult GetCity(int id, bool includePointsOfInterest = false)
         {
             return includePointsOfInterest ? Ok(_cityRepository.GetCity(id)) : Ok(_cityRepository.GetCityWithoutPoi(id));
+        }
+
+        [HttpPut("{cityId}/UpdateCity")]
+        public IActionResult UpdateCity(int cityId, [FromBody] CityUpdateDto city)
+        {
+            //TODO: make call to repository to update city information
+            return NoContent();
+        }
+
+        [HttpPost("{cityId}/CreateCity")]
+        public IActionResult CreateCity(int id, [FromBody] CityCreationDto city)
+        {
+            //TODO: make call to repository to create city information
+            return Ok();
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteCity(int id)
+        {
+            //TODO: make call to repository to remove city and all points of interest associated.
+            return NoContent();
         }
     }
 }

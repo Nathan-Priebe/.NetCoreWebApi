@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using NetCoreWebAPI.Entities;
@@ -88,6 +91,13 @@ namespace NetCoreWebAPI
             cityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
+
+            app.UseDefaultFiles(new DefaultFilesOptions
+            {
+                DefaultFileNames = new
+                    List<string> { "index.html" }
+            });
+            app.UseStaticFiles();
 
             //Using automapper to create mapping between entities and DTO models
             AutoMapper.Mapper.Initialize(cfg =>
