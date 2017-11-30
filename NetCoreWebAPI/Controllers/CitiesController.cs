@@ -42,24 +42,48 @@ namespace NetCoreWebAPI.Controllers
             return includePointsOfInterest ? Ok(_cityRepository.GetCity(id)) : Ok(_cityRepository.GetCityWithoutPoi(id));
         }
 
+        /// <summary>
+        /// Updates the city.
+        /// </summary>
+        /// <param name="cityId">The city identifier.</param>
+        /// <param name="city">The city.</param>
+        /// <returns></returns>
         [HttpPut("{cityId}/UpdateCity")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
         public IActionResult UpdateCity(int cityId, [FromBody] CityUpdateDto city)
         {
-            //TODO: make call to repository to update city information
+            _cityRepository.UpdateCity(cityId, city);
             return NoContent();
         }
 
+        /// <summary>
+        /// Creates the city.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="city">The city.</param>
+        /// <returns></returns>
         [HttpPost("{cityId}/CreateCity")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public IActionResult CreateCity(int id, [FromBody] CityCreationDto city)
         {
-            //TODO: make call to repository to create city information
+            _cityRepository.CreateCity(city);
             return Ok();
         }
 
-        [HttpDelete]
+        /// <summary>
+        /// Deletes the city.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("{cityId}/Delete")]
+        [ProducesResponseType(204)]
         public IActionResult DeleteCity(int id)
         {
-            //TODO: make call to repository to remove city and all points of interest associated.
+            _cityRepository.DeleteCity(id);
             return NoContent();
         }
     }

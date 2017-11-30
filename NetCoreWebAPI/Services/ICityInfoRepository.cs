@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NetCoreWebAPI.Entities;
+using NetCoreWebAPI.Models;
 
 namespace NetCoreWebAPI.Services
 {
@@ -13,5 +14,7 @@ namespace NetCoreWebAPI.Services
         void DeletePointOfInterest(PointOfInterest pointOfInterest);
         bool Save();
         void AddPointOfInterestForCity(int cityId, PointOfInterest pointOfInterest);
+        void DeleteCity(City city);
+        void CreateCity(City city);
     }
 }

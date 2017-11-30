@@ -2,6 +2,7 @@
 using AutoMapper;
 using NetCoreWebAPI.Exceptions;
 using NetCoreWebAPI.Models;
+using System;
 
 namespace NetCoreWebAPI.Services
 {
@@ -37,6 +38,43 @@ namespace NetCoreWebAPI.Services
                 throw new NotFoundException($"City with the ID of {id} could not be found");
 
             return Mapper.Map<CityDto>(city);
+        }
+
+        public CityDto CreateCity(CityCreationDto city)
+        {
+            var finalCity = Mapper.Map<Entities.City>(city);
+
+            _cityInfoRepository.CreateCity(finalCity);
+
+            if (!_cityInfoRepository.Save())
+            {
+                throw new Exception("A problem happened while handling your request.");
+            }
+
+            return Mapper.Map<CityDto>(finalCity);
+        }
+
+        public void UpdateCity(int cityId, CityUpdateDto city)
+        {
+            var cityEntity = _cityInfoRepository.GetCity(cityId, false);
+            if (cityEntity == null)
+            {
+                throw new NotFoundException($"City with the ID {cityId} wasn't found");
+            }
+
+            Mapper.Map(city, cityEntity);
+
+            if (!_cityInfoRepository.Save())
+            {
+                throw new Exception("A problem happened while handling your request.");
+            }
+        }
+
+        public void DeleteCity(int cityId)
+        {
+            var city = _cityInfoRepository.GetCity(cityId, false);
+            _cityInfoRepository.DeleteCity(city);
+
         }
     }
 }

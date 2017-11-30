@@ -8,5 +8,8 @@ namespace NetCoreWebAPI.Services
         IEnumerable<CityWithoutPointsOfInterestDto> GetCities();
         CityDto GetCity(int id);
         CityWithoutPointsOfInterestDto GetCityWithoutPoi(int id);
+        void DeleteCity(int cityId);
+        CityDto CreateCity(CityCreationDto city);
+        void UpdateCity(int cityId, CityUpdateDto city);
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NetCoreWebAPI.Entities;
+using NetCoreWebAPI.Models;
 
 namespace NetCoreWebAPI.Services
 {
@@ -57,9 +58,22 @@ namespace NetCoreWebAPI.Services
             _context.PointsOfInterest.Remove(pointOfInterest);
         }
 
+        public void DeleteCity(City city)
+        {
+            //Removing all points of interest assigned to a city
+            _context.PointsOfInterest.RemoveRange(_context.PointsOfInterest.Where(c => c.CityId == city.Id));
+            //Removing city
+            _context.Cities.Remove(city);
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public void CreateCity(City city)
+        {
+            _context.Cities.Add(city);
         }
     }
 }
