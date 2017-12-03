@@ -64,11 +64,11 @@ namespace NetCoreWebAPI.Controllers
         /// <param name="id">The identifier.</param>
         /// <param name="city">The city.</param>
         /// <returns></returns>
-        [HttpPost("{cityId}/CreateCity")]
+        [HttpPost("CreateCity")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult CreateCity(int id, [FromBody] CityCreationDto city)
+        public IActionResult CreateCity([FromBody] CityCreationDto city)
         {
             _cityRepository.CreateCity(city);
             return Ok();

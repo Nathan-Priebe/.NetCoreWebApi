@@ -104,10 +104,14 @@ namespace NetCoreWebAPI
             {
                 cfg.CreateMap<Cities, Models.CityWithoutPointsOfInterestDto>();
                 cfg.CreateMap<Cities, Models.CityDto>();
+                cfg.CreateMap<Cities, Models.CityUpdateDto>();
+                cfg.CreateMap<Cities, Models.CityCreationDto>();
                 cfg.CreateMap<PointOfInterest, Models.PointsOfInterestDto>();
                 cfg.CreateMap<Models.PointOfInterestCreationDto, PointOfInterest>();
                 cfg.CreateMap<Models.PointOfInterestUpdateDto, PointOfInterest>();
                 cfg.CreateMap<Models.CityCreationDto, City>();
+                cfg.CreateMap<Models.CityUpdateDto, City>();
+                cfg.CreateMap<City, Models.CityUpdateDto>();
                 cfg.CreateMap<PointOfInterest, Models.PointOfInterestUpdateDto>();
             });
 
