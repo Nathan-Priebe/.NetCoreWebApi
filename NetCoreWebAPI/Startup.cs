@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using NetCoreWebAPI.Entities;
 using NetCoreWebAPI.Filter;
+using NetCoreWebAPI.Middleware;
 using NetCoreWebAPI.Services;
 using Newtonsoft.Json.Serialization;
-using NLog.Extensions.Logging;
-using NetCoreWebAPI.Middleware;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
+using System.IO;
 using Cities = NetCoreWebAPI.Services.Cities;
 
 namespace NetCoreWebAPI
@@ -75,8 +71,6 @@ namespace NetCoreWebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cities API V1");
             });
 
-            loggerFactory.AddNLog();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -92,11 +86,13 @@ namespace NetCoreWebAPI
 
             app.UseStatusCodePages();
 
+            //Setting landing page
             app.UseDefaultFiles(new DefaultFilesOptions
             {
                 DefaultFileNames = new
                     List<string> { "index.html" }
             });
+            //Using static pages for landing page
             app.UseStaticFiles();
 
             //Using automapper to create mapping between entities and DTO models
@@ -116,8 +112,6 @@ namespace NetCoreWebAPI
             });
 
             app.UseMvc();
-
-            app.UseStatusCodePages();
         }
     }
 }

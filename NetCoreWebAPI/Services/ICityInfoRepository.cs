@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NetCoreWebAPI.Entities;
-using NetCoreWebAPI.Models;
 
 namespace NetCoreWebAPI.Services
 {

@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NetCoreWebAPI.Entities;
-using NetCoreWebAPI.Models;
 
 namespace NetCoreWebAPI.Services
 {

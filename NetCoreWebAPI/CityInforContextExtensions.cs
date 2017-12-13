@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace NetCoreWebAPI
 {
+    //DB seed data
     public static class CityInfoExtensions
     {
         public static void EnsureSeedDataForContext(this CityInfoContext context)
