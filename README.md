@@ -17,3 +17,4 @@ Swagger documents for the API can be found at http://<url>/swagger/
 * Entity Framework Core
 * Fluent Validation
 * Swagger
+* AutoMapper
